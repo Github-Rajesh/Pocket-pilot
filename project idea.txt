@@ -1,0 +1,1018 @@
+# Pocket Pilot
+
+### AI-Powered Personal Finance Operating System
+
+**Version:** 1.0
+
+---
+
+# IMPORTANT FOR CODEX
+
+You are not building a demo application.
+
+You are building a production-ready mobile application.
+
+The code must be modular, scalable, clean, documented and easy to maintain.
+
+Never generate everything in one file.
+
+Build one feature at a time.
+
+Every feature must be production quality.
+
+Use Clean Architecture.
+
+Use SOLID Principles.
+
+Follow Feature-first architecture.
+
+Every feature should be testable.
+
+Every screen should be responsive.
+
+Every component should be reusable.
+
+Never hardcode values.
+
+Never duplicate logic.
+
+Every business rule should be isolated.
+
+---
+
+# PROJECT NAME
+
+Pocket Pilot
+
+---
+
+# PROJECT VISION
+
+Pocket Pilot is an AI-powered personal finance companion.
+
+It is NOT another expense tracker.
+
+The objective is to become a Financial Operating System.
+
+The application should help users answer questions like:
+
+* Can I afford this purchase?
+* How much can I spend today?
+* Will I achieve my savings goal?
+* Where is my money leaking?
+* What happens if my salary increases?
+* Can I buy a new laptop this month?
+* How much money will I have after 6 months?
+* What is my financial health today?
+
+The application should make financial decisions easier.
+
+---
+
+# TARGET USER
+
+Young working professionals.
+
+Salary earners.
+
+Engineers.
+
+Software Developers.
+
+Data Scientists.
+
+People who want to improve financial discipline.
+
+---
+
+# PRIMARY USER (Current)
+
+Salary:
+₹86,000/month (currently)
+
+Expected future salary:
+₹1,10,000–₹1,20,000+
+
+---
+
+# USER PROFILE
+
+The first version should be designed specifically for one user.
+
+Current monthly commitments:
+
+Parents Support:
+₹28,000
+
+Rent:
+₹10,500
+
+Brother Credit Card EMI:
+₹5,000
+
+Groceries:
+₹4,000–₹5,000
+
+Pet Expenses:
+₹3,000–₹4,000
+
+Travel:
+₹3,000–₹4,000
+
+Utilities:
+₹3,000
+
+Credit Card:
+Variable
+Maximum limit:
+₹20,800
+
+These should be configurable.
+
+---
+
+# PHILOSOPHY
+
+The application should never feel like accounting software.
+
+It should feel like:
+
+Apple Health
+
+*
+
+Google Calendar
+
+*
+
+ChatGPT
+
+*
+
+YNAB
+
+*
+
+Notion
+
+Combined into one experience.
+
+Minimal.
+
+Elegant.
+
+Beautiful.
+
+Useful.
+
+---
+
+# PRIMARY GOALS
+
+1. Track expenses
+
+2. Track income
+
+3. Track savings
+
+4. Daily spending guidance
+
+5. Monthly planning
+
+6. Goal planning
+
+7. AI financial assistant
+
+8. Smart insights
+
+9. Future forecasting
+
+10. Financial discipline
+
+---
+
+# LONG TERM GOAL
+
+Become a Financial Operating System.
+
+Eventually support:
+
+Investments
+
+Stocks
+
+Mutual Funds
+
+UPI parsing
+
+SMS parsing
+
+Email parsing
+
+Tax estimation
+
+Retirement planning
+
+Salary negotiations
+
+Loan planning
+
+Insurance
+
+Budget automation
+
+AI advisor
+
+---
+
+# DESIGN PRINCIPLES
+
+Mobile First
+
+Offline First
+
+Fast
+
+Clean
+
+Simple
+
+Beautiful
+
+Minimal taps
+
+No clutter
+
+Dark mode first
+
+Material 3
+
+Glassmorphism cards
+
+Premium feel
+
+60 FPS animations
+
+---
+
+# TECH STACK
+
+Flutter
+
+Riverpod
+
+Go Router
+
+Drift SQLite
+
+Freezed
+
+Build Runner
+
+Dio
+
+FastAPI Backend (future)
+
+PostgreSQL (future)
+
+Firebase Authentication (future)
+
+Firebase Cloud Messaging
+
+Cloud Sync (future)
+
+---
+
+# ARCHITECTURE
+
+Presentation Layer
+
+↓
+
+Domain Layer
+
+↓
+
+Repository Layer
+
+↓
+
+Data Layer
+
+↓
+
+SQLite
+
+Later
+
+↓
+
+REST API
+
+↓
+
+Cloud
+
+---
+
+# FOLDER STRUCTURE
+
+lib/
+
+core/
+
+config/
+
+constants/
+
+extensions/
+
+theme/
+
+utils/
+
+widgets/
+
+features/
+
+dashboard/
+
+expenses/
+
+income/
+
+goals/
+
+analytics/
+
+credit_cards/
+
+subscriptions/
+
+insights/
+
+ai/
+
+settings/
+
+shared/
+
+database/
+
+services/
+
+repositories/
+
+models/
+
+domain/
+
+presentation/
+
+tests/
+
+---
+
+# APPLICATION FLOW
+
+Splash
+
+↓
+
+Onboarding
+
+↓
+
+Create Profile
+
+↓
+
+Enter Salary
+
+↓
+
+Add Fixed Expenses
+
+↓
+
+Dashboard
+
+---
+
+# CORE MODULES
+
+Dashboard
+
+Expenses
+
+Income
+
+Goals
+
+Credit Cards
+
+Analytics
+
+Insights
+
+AI
+
+Settings
+
+---
+
+# DASHBOARD
+
+Show
+
+Current Salary
+
+Available Balance
+
+Today's Safe Spend
+
+Remaining Budget
+
+Savings
+
+Upcoming Bills
+
+Financial Health Score
+
+Monthly Progress
+
+Days Until Salary
+
+Top Spending Category
+
+Goal Progress
+
+---
+
+# QUICK ACTIONS
+
+Add Expense
+
+Add Income
+
+Check Budget
+
+Ask AI
+
+View Analytics
+
+---
+
+# EXPENSE MODULE
+
+Expense fields
+
+Title
+
+Amount
+
+Category
+
+Date
+
+Payment Mode
+
+Notes
+
+Location (optional)
+
+Receipt (future)
+
+Tags
+
+Recurring
+
+---
+
+# CATEGORIES
+
+Food
+
+Groceries
+
+Parents
+
+Rent
+
+Travel
+
+Utilities
+
+Pet
+
+Shopping
+
+Health
+
+Entertainment
+
+Education
+
+Investment
+
+EMI
+
+Credit Card
+
+Other
+
+---
+
+# CREDIT CARD MODULE
+
+Store
+
+Card Name
+
+Limit
+
+Current Usage
+
+Statement Date
+
+Due Date
+
+Minimum Due
+
+Outstanding
+
+Utilization %
+
+Alerts
+
+Payment History
+
+---
+
+# GOALS MODULE
+
+Examples
+
+Singapore Trip
+
+Emergency Fund
+
+Gaming Laptop
+
+Car
+
+House
+
+Wedding
+
+Vacation
+
+Investments
+
+Each Goal
+
+Target Amount
+
+Deadline
+
+Current Savings
+
+Monthly Contribution
+
+Completion %
+
+AI Advice
+
+---
+
+# ANALYTICS
+
+Daily
+
+Weekly
+
+Monthly
+
+Yearly
+
+Category Wise
+
+Trend Analysis
+
+Cash Flow
+
+Income vs Expense
+
+Savings Ratio
+
+Financial Health
+
+Charts
+
+Pie
+
+Bar
+
+Line
+
+Area
+
+---
+
+# INSIGHTS ENGINE
+
+Generate insights like
+
+"You spent 18% more on food."
+
+"You are under budget."
+
+"Parents contribution completed."
+
+"You are overspending."
+
+"You can save ₹8,500 this month."
+
+"You can buy the laptop next month."
+
+---
+
+# AI MODULE
+
+ChatGPT style interface.
+
+User should ask
+
+"How much did I spend?"
+
+"Can I buy an iPhone?"
+
+"What if my salary becomes ₹17 LPA?"
+
+"Can I afford a bike?"
+
+"When should I buy a laptop?"
+
+"What category wastes the most money?"
+
+AI should answer using user financial data.
+
+---
+
+# SMART FEATURES
+
+Daily Safe Spend
+
+Financial Health Score
+
+Expense Prediction
+
+Salary Simulator
+
+Goal Simulator
+
+Budget Simulator
+
+Purchase Simulator
+
+Emergency Alert
+
+Overspending Detection
+
+Unused Subscription Detection
+
+Monthly Summary
+
+Weekly Summary
+
+Yearly Report
+
+---
+
+# UNIQUE FEATURE
+
+CAN I BUY THIS?
+
+User enters
+
+Laptop
+
+₹95,000
+
+AI calculates
+
+Current savings
+
+Future expenses
+
+Salary
+
+Goals
+
+Cash flow
+
+Recommendation
+
+Then answers
+
+YES
+
+NO
+
+WAIT
+
+BUY NEXT MONTH
+
+---
+
+# DAILY SAFE SPEND
+
+Formula
+
+Remaining Monthly Budget
+
+/
+
+Remaining Days
+
+=
+
+Safe Spending Today
+
+Display on dashboard.
+
+---
+
+# FINANCIAL HEALTH SCORE
+
+Calculate using
+
+Savings %
+
+Debt
+
+Credit Utilization
+
+Expense Ratio
+
+Goal Progress
+
+Budget Discipline
+
+Output
+
+0–100
+
+---
+
+# NOTIFICATIONS
+
+Salary Credited
+
+Rent Reminder
+
+Credit Card Reminder
+
+Goal Reminder
+
+Overspending Alert
+
+Daily Safe Spend
+
+Weekly Summary
+
+Monthly Summary
+
+---
+
+# SETTINGS
+
+Currency
+
+Theme
+
+Export Data
+
+Import Data
+
+Backup
+
+Notifications
+
+Categories
+
+Salary
+
+Fixed Expenses
+
+AI Preferences
+
+---
+
+# SECURITY
+
+Local Encryption
+
+PIN Lock
+
+Biometric Login
+
+Encrypted SQLite
+
+Cloud Encryption
+
+---
+
+# TESTING
+
+Widget Tests
+
+Unit Tests
+
+Integration Tests
+
+Repository Tests
+
+API Tests
+
+Golden Tests
+
+---
+
+# PERFORMANCE
+
+Cold Start <2 seconds
+
+Smooth animations
+
+Offline capability
+
+SQLite optimization
+
+Lazy loading
+
+Pagination
+
+---
+
+# CODING STANDARDS
+
+Meaningful variable names
+
+Meaningful folders
+
+No giant widgets
+
+Small reusable components
+
+Maximum readability
+
+No business logic inside UI
+
+Repository Pattern
+
+Dependency Injection
+
+Proper error handling
+
+Logging
+
+Documentation
+
+---
+
+# GIT STRATEGY
+
+main
+
+develop
+
+feature/dashboard
+
+feature/expenses
+
+feature/goals
+
+feature/analytics
+
+feature/ai
+
+Commit after every feature.
+
+---
+
+# DEVELOPMENT ROADMAP
+
+## Phase 1
+
+Project setup
+
+Theme
+
+Routing
+
+SQLite
+
+Dashboard
+
+Expense CRUD
+
+Income CRUD
+
+Categories
+
+Fixed Expenses
+
+Analytics
+
+## Phase 2
+
+Goals
+
+Credit Cards
+
+Notifications
+
+Charts
+
+Recurring Expenses
+
+Monthly Reports
+
+## Phase 3
+
+AI Assistant
+
+Insights Engine
+
+Forecasting
+
+Daily Safe Spend
+
+Financial Health
+
+## Phase 4
+
+Authentication
+
+Cloud Sync
+
+Backup
+
+Export
+
+Import
+
+## Phase 5
+
+Play Store Release
+
+Crash Reporting
+
+CI/CD
+
+Analytics
+
+Production Monitoring
+
+---
+
+# SUCCESS METRICS
+
+User opens app every day.
+
+Expense entry <10 seconds.
+
+Dashboard understood in under 5 seconds.
+
+AI answers in natural language.
+
+No unnecessary screens.
+
+Everything should reduce financial anxiety.
+
+---
+
+# FINAL INSTRUCTION TO CODEX
+
+Treat Pocket Pilot as a production SaaS product, not a tutorial project.
+
+Do not rush implementation.
+
+Implement feature-by-feature.
+
+Generate complete production-quality code.
+
+Maintain architectural consistency.
+
+Create reusable widgets.
+
+Write documentation.
+
+Write tests.
+
+Use best Flutter practices.
+
+Never sacrifice maintainability for speed.
+
+Whenever requirements are ambiguous, extend the product logically while preserving the project's vision: **build the smartest, cleanest, most enjoyable AI-powered personal finance mobile application possible.**
