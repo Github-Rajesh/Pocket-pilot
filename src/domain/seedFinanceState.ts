@@ -7,9 +7,11 @@ const futureMonth = (months: number) =>
   new Date(today.getFullYear(), today.getMonth() + months, 1).toISOString();
 
 export const seedFinanceState: FinanceState = {
+  schemaVersion: 2,
   profile: {
     name: 'Shraj',
     monthlySalary: 86000,
+    salaryAdjustmentThisMonth: 0,
     expectedSalaryMin: 110000,
     expectedSalaryMax: 120000,
     salaryDay: 1,
@@ -24,7 +26,7 @@ export const seedFinanceState: FinanceState = {
         amount: 28000,
         category: 'Parents',
         dueDay: 1,
-        paidThisMonth: true,
+        paidThisMonth: false,
       },
       {
         id: 'rent',
@@ -32,7 +34,7 @@ export const seedFinanceState: FinanceState = {
         amount: 10500,
         category: 'Rent',
         dueDay: 5,
-        paidThisMonth: true,
+        paidThisMonth: false,
       },
       {
         id: 'brother-emi',
@@ -40,7 +42,7 @@ export const seedFinanceState: FinanceState = {
         amount: 5000,
         category: 'EMI',
         dueDay: 10,
-        paidThisMonth: true,
+        paidThisMonth: false,
       },
       {
         id: 'utilities',
@@ -107,8 +109,8 @@ export const seedFinanceState: FinanceState = {
       id: 'emergency-fund',
       name: 'Emergency Fund',
       targetAmount: 150000,
-      currentSavings: 32000,
-      monthlyContribution: 8000,
+      currentSavings: 0,
+      monthlyContribution: 0,
       deadline: futureMonth(8),
       note: 'Three months of core expenses.',
     },
@@ -116,8 +118,8 @@ export const seedFinanceState: FinanceState = {
       id: 'gaming-laptop',
       name: 'Gaming Laptop',
       targetAmount: 95000,
-      currentSavings: 18000,
-      monthlyContribution: 5000,
+      currentSavings: 0,
+      monthlyContribution: 0,
       deadline: futureMonth(6),
       note: 'Buy only if cash flow stays disciplined.',
     },
@@ -125,8 +127,8 @@ export const seedFinanceState: FinanceState = {
       id: 'singapore-trip',
       name: 'Singapore Trip',
       targetAmount: 120000,
-      currentSavings: 7000,
-      monthlyContribution: 3000,
+      currentSavings: 0,
+      monthlyContribution: 0,
       deadline: futureMonth(12),
       note: 'Travel fund after emergency buffer improves.',
     },

@@ -404,6 +404,13 @@ button {
   flex: 0 0 auto;
 }
 
+.bill-row__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+}
+
 .bill-row strong,
 .bill-row span,
 .transaction-row strong,
@@ -514,6 +521,36 @@ textarea:focus {
   background: rgba(255, 255, 255, 0.07);
 }
 
+.status-pill {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid rgba(244, 190, 94, 0.34);
+  border-radius: 999px;
+  background: rgba(244, 190, 94, 0.1);
+  color: var(--amber);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.status-pill--paid {
+  border-color: rgba(86, 214, 138, 0.34);
+  background: rgba(86, 214, 138, 0.12);
+  color: var(--green);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.checkbox-row input {
+  width: 18px;
+  min-height: 18px;
+  accent-color: var(--green);
+}
+
 .transaction-list-panel {
   min-height: 0;
 }
@@ -565,6 +602,7 @@ textarea:focus {
 
 .health-breakdown {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
 }
 
@@ -576,6 +614,50 @@ textarea:focus {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.045);
+}
+
+.cash-flow-list {
+  display: grid;
+  gap: 10px;
+}
+
+.cash-flow-row {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.cash-flow-row div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cash-flow-row span {
+  color: var(--muted);
+}
+
+.cash-flow-row__amount {
+  flex: 0 0 auto;
+}
+
+.cash-flow-row__amount--positive {
+  color: var(--green);
+}
+
+.cash-flow-row__amount--negative {
+  color: #fca5a5;
+}
+
+.cash-flow-row__amount--reserved {
+  color: var(--amber);
+}
+
+.muted-copy {
+  margin: 0;
+  color: var(--muted);
 }
 
 .assistant-layout {
@@ -812,6 +894,7 @@ textarea:focus {
   }
 
   .transaction-row__amount,
+  .bill-row__actions,
   .settings-actions {
     width: 100%;
     justify-content: space-between;

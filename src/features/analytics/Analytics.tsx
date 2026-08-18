@@ -17,33 +17,65 @@ export function Analytics() {
     const max = Math.max(...entries.map(([, amount]) => amount), 1);
     return entries.map(([category, amount]) => ({ category, amount, width: (amount / max) * 100 }));
   }, [monthlyTransactions]);
+  const cashFlowRows = [
+    { label: 'Base salary', amount: metrics.baseSalary, tone: 'positive' },
+    { label: 'Salary adjustment', amount: metrics.salaryAdjustment, tone: metrics.salaryAdjustment >= 0 ? 'positive' : 'negative' },
+    { label: 'Extra income', amount: metrics.currentMonthIncome, tone: 'positive' },
+    { label: 'Fixed bills paid', amount: -metrics.paidFixedExpenseTotal, tone: 'negative' },
+    { label: 'Fixed bills still unpaid', amount: -metrics.unpaidFixedExpenseTotal, tone: 'reserved' },
+    { label: 'Flexible spending', amount: -metrics.currentMonthExpenses, tone: 'negative' },
+    { label: 'Goal contributions planned', amount: -metrics.plannedGoalSavings, tone: 'reserved' },
+  ];
 
   return (
     <section className="screen">
       <header className="screen-header">
         <div>
-          <span className="eyebrow">Patterns</span>
-          <h1>Analytics</h1>
-          <p>Cash flow, spending concentration, savings ratio, and category pressure.</p>
+          <span className="eyebrow">This month</span>
+          <h1>Money Map</h1>
+          <p>Income, fixed commitments, unpaid bills, flexible spending, and safe balance.</p>
         </div>
       </header>
 
       <div className="stat-grid">
-        <StatCard label="Income this month" tone="good" value={currency(metrics.currentMonthIncome)} />
-        <StatCard label="Expenses this month" value={currency(metrics.currentMonthExpenses)} />
-        <StatCard label="Top category" value={metrics.topSpendingCategory} />
-        <StatCard label="Remaining budget" tone="good" value={currency(metrics.remainingMonthlyBudget)} />
+        <StatCard label="Expected income" tone="good" value={currency(metrics.expectedMonthlyIncome)} />
+        <StatCard label="Already spent" value={currency(metrics.currentMonthExpenses + metrics.paidFixedExpenseTotal)} />
+        <StatCard label="Still reserved" value={currency(metrics.unpaidFixedExpenseTotal + metrics.plannedGoalSavings)} />
+        <StatCard label="Safe balance" tone="good" value={currency(metrics.remainingMonthlyBudget)} />
       </div>
 
       <div className="content-grid">
         <article className="panel">
           <div className="panel__header">
             <div>
-              <span className="eyebrow">Category wise</span>
-              <h2>Spending Distribution</h2>
+              <span className="eyebrow">Flow</span>
+              <h2>Monthly Breakdown</h2>
+            </div>
+          </div>
+          <div className="cash-flow-list">
+            {cashFlowRows.map((row) => (
+              <div className="cash-flow-row" key={row.label}>
+                <div>
+                  <span>{row.label}</span>
+                  <strong className={`cash-flow-row__amount cash-flow-row__amount--${row.tone}`}>
+                    {row.amount < 0 ? '-' : '+'}
+                    {currency(Math.abs(row.amount))}
+                  </strong>
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="panel">
+          <div className="panel__header">
+            <div>
+              <span className="eyebrow">Categories</span>
+              <h2>Flexible Spending</h2>
             </div>
           </div>
           <div className="bar-list">
+            {totals.length === 0 && <p className="muted-copy">No flexible spending added yet.</p>}
             {totals.map((item) => (
               <div className="bar-row" key={item.category}>
                 <div className="bar-row__label">
@@ -57,30 +89,30 @@ export function Analytics() {
             ))}
           </div>
         </article>
-
-        <article className="panel">
-          <div className="panel__header">
-            <div>
-              <span className="eyebrow">Cash flow</span>
-              <h2>Financial Health Mix</h2>
-            </div>
-          </div>
-          <div className="health-breakdown">
-            <div>
-              <span>Expense ratio</span>
-              <strong>{Math.round(metrics.expenseRatio * 100)}%</strong>
-            </div>
-            <div>
-              <span>Savings ratio</span>
-              <strong>{Math.round(metrics.savingsRatio * 100)}%</strong>
-            </div>
-            <div>
-              <span>Credit utilization</span>
-              <strong>{Math.round(metrics.creditUtilization * 100)}%</strong>
-            </div>
-          </div>
-        </article>
       </div>
+
+      <article className="panel">
+        <div className="panel__header">
+          <div>
+            <span className="eyebrow">Ratios</span>
+            <h2>Health Inputs</h2>
+          </div>
+        </div>
+        <div className="health-breakdown">
+          <div>
+            <span>Expense ratio</span>
+            <strong>{Math.round(metrics.expenseRatio * 100)}%</strong>
+          </div>
+          <div>
+            <span>Savings ratio</span>
+            <strong>{Math.round(metrics.savingsRatio * 100)}%</strong>
+          </div>
+          <div>
+            <span>Credit utilization</span>
+            <strong>{Math.round(metrics.creditUtilization * 100)}%</strong>
+          </div>
+        </div>
+      </article>
     </section>
   );
 }

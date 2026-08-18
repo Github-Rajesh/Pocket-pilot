@@ -1,23 +1,46 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { useFinance } from '../../app/FinanceProvider';
 
 export function SettingsPanel() {
-  const { state, updateSalary, updateFixedExpense, resetData } = useFinance();
+  const { state, updateSalary, updateSalaryAdjustment, updateFixedExpense, resetData } = useFinance();
   const [salary, setSalary] = useState(String(state.profile.monthlySalary));
+  const [salaryAdjustment, setSalaryAdjustment] = useState(
+    String(state.profile.salaryAdjustmentThisMonth),
+  );
   const [fixedExpenses, setFixedExpenses] = useState(
     state.profile.fixedExpenses.map((expense) => ({
       id: expense.id,
       amount: String(expense.amount),
       dueDay: String(expense.dueDay),
+      paidThisMonth: expense.paidThisMonth,
     })),
   );
+
+  useEffect(() => {
+    setSalary(String(state.profile.monthlySalary));
+    setSalaryAdjustment(String(state.profile.salaryAdjustmentThisMonth));
+    setFixedExpenses(
+      state.profile.fixedExpenses.map((expense) => ({
+        id: expense.id,
+        amount: String(expense.amount),
+        dueDay: String(expense.dueDay),
+        paidThisMonth: expense.paidThisMonth,
+      })),
+    );
+  }, [state.profile]);
 
   function submit(event: FormEvent) {
     event.preventDefault();
     updateSalary(Number(salary));
+    updateSalaryAdjustment(Number(salaryAdjustment));
     fixedExpenses.forEach((expense) => {
-      updateFixedExpense(expense.id, Number(expense.amount), Number(expense.dueDay));
+      updateFixedExpense(
+        expense.id,
+        Number(expense.amount),
+        Number(expense.dueDay),
+        expense.paidThisMonth,
+      );
     });
   }
 
@@ -33,12 +56,22 @@ export function SettingsPanel() {
 
       <form className="panel form-panel settings-form" onSubmit={submit}>
         <label>
-          Monthly salary
+          Base monthly salary
           <input
             min="0"
             onChange={(event) => setSalary(event.target.value)}
             type="number"
             value={salary}
+          />
+        </label>
+
+        <label>
+          This month adjustment
+          <input
+            onChange={(event) => setSalaryAdjustment(event.target.value)}
+            placeholder="Use negative for loss of pay"
+            type="number"
+            value={salaryAdjustment}
           />
         </label>
 
@@ -85,6 +118,22 @@ export function SettingsPanel() {
                     />
                   </label>
                 </div>
+                <label className="checkbox-row">
+                  <input
+                    checked={draft.paidThisMonth}
+                    onChange={(event) =>
+                      setFixedExpenses((current) =>
+                        current.map((item) =>
+                          item.id === expense.id
+                            ? { ...item, paidThisMonth: event.target.checked }
+                            : item,
+                        ),
+                      )
+                    }
+                    type="checkbox"
+                  />
+                  Paid this month
+                </label>
               </div>
             );
           })}

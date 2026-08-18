@@ -20,7 +20,11 @@ type FinanceAction =
   | { type: 'delete-transaction'; payload: string }
   | { type: 'add-goal'; payload: Goal }
   | { type: 'update-salary'; payload: number }
-  | { type: 'update-fixed-expense'; payload: { id: string; amount: number; dueDay: number } }
+  | { type: 'update-salary-adjustment'; payload: number }
+  | {
+      type: 'update-fixed-expense';
+      payload: { id: string; amount: number; dueDay: number; paidThisMonth: boolean };
+    }
   | { type: 'reset' };
 
 interface FinanceContextValue {
@@ -29,7 +33,14 @@ interface FinanceContextValue {
   deleteTransaction: (id: string) => void;
   addGoal: (goal: Omit<Goal, 'id'>) => void;
   updateSalary: (salary: number) => void;
-  updateFixedExpense: (id: string, amount: number, dueDay: number) => void;
+  updateSalaryAdjustment: (amount: number) => void;
+  updateFixedExpense: (
+    id: string,
+    amount: number,
+    dueDay: number,
+    paidThisMonth: boolean,
+  ) => void;
+  toggleFixedExpensePaid: (id: string) => void;
   resetData: () => void;
 }
 
@@ -61,6 +72,14 @@ function reducer(state: FinanceState, action: FinanceAction): FinanceState {
           monthlySalary: action.payload,
         },
       };
+    case 'update-salary-adjustment':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          salaryAdjustmentThisMonth: action.payload,
+        },
+      };
     case 'update-fixed-expense':
       return {
         ...state,
@@ -72,6 +91,7 @@ function reducer(state: FinanceState, action: FinanceAction): FinanceState {
                   ...expense,
                   amount: action.payload.amount,
                   dueDay: action.payload.dueDay,
+                  paidThisMonth: action.payload.paidThisMonth,
                 }
               : expense,
           ),
@@ -117,8 +137,31 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       updateSalary(salary) {
         dispatch({ type: 'update-salary', payload: salary });
       },
-      updateFixedExpense(id, amount, dueDay) {
-        dispatch({ type: 'update-fixed-expense', payload: { id, amount, dueDay } });
+      updateSalaryAdjustment(amount) {
+        dispatch({ type: 'update-salary-adjustment', payload: amount });
+      },
+      updateFixedExpense(id, amount, dueDay, paidThisMonth) {
+        dispatch({
+          type: 'update-fixed-expense',
+          payload: { id, amount, dueDay, paidThisMonth },
+        });
+      },
+      toggleFixedExpensePaid(id) {
+        const expense = state.profile.fixedExpenses.find((item) => item.id === id);
+
+        if (!expense) {
+          return;
+        }
+
+        dispatch({
+          type: 'update-fixed-expense',
+          payload: {
+            id,
+            amount: expense.amount,
+            dueDay: expense.dueDay,
+            paidThisMonth: !expense.paidThisMonth,
+          },
+        });
       },
       resetData() {
         repository.reset();

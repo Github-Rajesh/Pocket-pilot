@@ -22,7 +22,7 @@ interface DashboardProps {
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
-  const { state } = useFinance();
+  const { state, toggleFixedExpensePaid } = useFinance();
   const metrics = calculateDashboardMetrics(state);
   const insights = generateInsights(state).slice(0, 4);
 
@@ -33,8 +33,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           <span className="eyebrow">Today&apos;s command center</span>
           <h1>{currency(metrics.safeSpendToday)} safe to spend today</h1>
           <p>
-            Salary, fixed commitments, goal contributions, card usage, and this month&apos;s
-            spending are already factored in.
+            Salary, unpaid fixed bills, optional goal contributions, card usage, and this
+            month&apos;s spending are factored in.
           </p>
         </div>
         <div className="health-ring" aria-label={`Financial health score ${metrics.financialHealthScore}`}>
@@ -65,20 +65,20 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       <div className="stat-grid">
         <StatCard
           icon={<IndianRupee size={18} />}
-          label="Monthly salary"
-          value={currency(state.profile.monthlySalary)}
+          label="Expected income"
+          value={currency(metrics.expectedMonthlyIncome)}
         />
         <StatCard
           icon={<ShieldCheck size={18} />}
-          label="Available balance"
+          label="Cash before unpaid bills"
           tone="good"
           value={currency(metrics.availableBalance)}
         />
         <StatCard
           icon={<PiggyBank size={18} />}
-          label="Savings potential"
+          label="Unpaid fixed bills"
           tone="good"
-          value={currency(metrics.savingsPotential)}
+          value={currency(metrics.unpaidFixedExpenseTotal)}
         />
         <StatCard
           icon={<CalendarClock size={18} />}
@@ -132,9 +132,20 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               <div className="bill-row" key={expense.id}>
                 <div>
                   <strong>{expense.name}</strong>
-                  <span>Due day {expense.dueDay}</span>
+                  <span>
+                    Due day {expense.dueDay} - {expense.paidThisMonth ? 'Paid' : 'Unpaid'}
+                  </span>
                 </div>
-                <span>{currency(expense.amount)}</span>
+                <div className="bill-row__actions">
+                  <span>{currency(expense.amount)}</span>
+                  <button
+                    className={expense.paidThisMonth ? 'status-pill status-pill--paid' : 'status-pill'}
+                    onClick={() => toggleFixedExpensePaid(expense.id)}
+                    type="button"
+                  >
+                    {expense.paidThisMonth ? 'Paid' : 'Mark paid'}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

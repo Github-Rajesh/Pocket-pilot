@@ -31,6 +31,7 @@ export interface FixedExpense {
 export interface FinancialProfile {
   name: string;
   monthlySalary: number;
+  salaryAdjustmentThisMonth: number;
   expectedSalaryMin: number;
   expectedSalaryMax: number;
   salaryDay: number;
@@ -76,6 +77,7 @@ export interface CreditCardAccount {
 }
 
 export interface FinanceState {
+  schemaVersion: number;
   profile: FinancialProfile;
   transactions: MoneyTransaction[];
   goals: Goal[];
@@ -83,9 +85,16 @@ export interface FinanceState {
 }
 
 export interface DashboardMetrics {
+  baseSalary: number;
+  salaryAdjustment: number;
+  expectedMonthlyIncome: number;
   availableBalance: number;
   currentMonthExpenses: number;
   currentMonthIncome: number;
+  fixedExpenseTotal: number;
+  paidFixedExpenseTotal: number;
+  unpaidFixedExpenseTotal: number;
+  plannedGoalSavings: number;
   remainingMonthlyBudget: number;
   safeSpendToday: number;
   savingsPotential: number;

@@ -56,15 +56,20 @@ export function calculateDashboardMetrics(
     (total, expense) => total + expense.amount,
     0,
   );
+  const paidFixedExpenseTotal = state.profile.fixedExpenses
+    .filter((expense) => expense.paidThisMonth)
+    .reduce((total, expense) => total + expense.amount, 0);
+  const unpaidFixedExpenseTotal = fixedExpenseTotal - paidFixedExpenseTotal;
   const plannedGoalSavings = state.goals.reduce(
     (total, goal) => total + goal.monthlyContribution,
     0,
   );
-  const expectedIncome = state.profile.monthlySalary + currentMonthIncome;
+  const expectedIncome =
+    state.profile.monthlySalary + state.profile.salaryAdjustmentThisMonth + currentMonthIncome;
   const remainingMonthlyBudget =
     expectedIncome - fixedExpenseTotal - plannedGoalSavings - currentMonthExpenses;
-  const availableBalance = expectedIncome - fixedExpenseTotal - currentMonthExpenses;
-  const savingsPotential = Math.max(availableBalance - plannedGoalSavings, 0);
+  const availableBalance = expectedIncome - paidFixedExpenseTotal - currentMonthExpenses;
+  const savingsPotential = Math.max(remainingMonthlyBudget, 0);
   const creditUsage = state.creditCards.reduce((total, card) => total + card.currentUsage, 0);
   const creditLimit = state.creditCards.reduce((total, card) => total + card.limit, 0);
   const creditUtilization = creditLimit <= 0 ? 0 : creditUsage / creditLimit;
@@ -75,9 +80,16 @@ export function calculateDashboardMetrics(
   )[0];
 
   return {
+    baseSalary: state.profile.monthlySalary,
+    salaryAdjustment: state.profile.salaryAdjustmentThisMonth,
+    expectedMonthlyIncome: expectedIncome,
     availableBalance,
     currentMonthExpenses,
     currentMonthIncome,
+    fixedExpenseTotal,
+    paidFixedExpenseTotal,
+    unpaidFixedExpenseTotal,
+    plannedGoalSavings,
     remainingMonthlyBudget,
     safeSpendToday: Math.max(remainingMonthlyBudget / remainingDaysInMonth(now), 0),
     savingsPotential,
@@ -106,13 +118,16 @@ export function calculateHealthScore(input: {
   const savingsScore = clamp(input.savingsRatio / 0.25, 0, 1) * 30;
   const expenseScore = clamp((0.85 - input.expenseRatio) / 0.45, 0, 1) * 25;
   const creditScore = clamp((0.6 - input.creditUtilization) / 0.6, 0, 1) * 20;
+  const activeGoals = input.goals.filter(
+    (goal) => goal.currentSavings > 0 || goal.monthlyContribution > 0,
+  );
   const goalAverage =
-    input.goals.length === 0
+    activeGoals.length === 0
       ? 0.5
-      : input.goals.reduce(
+      : activeGoals.reduce(
           (total, goal) => total + clamp(goal.currentSavings / goal.targetAmount, 0, 1),
           0,
-        ) / input.goals.length;
+        ) / activeGoals.length;
   const goalScore = goalAverage * 15;
   const disciplineScore = input.budgetRemaining >= 0 ? 10 : 0;
 
@@ -146,7 +161,9 @@ export function generateInsights(state: FinanceState, now = new Date()) {
     insights.push(`You can save about ${currency(metrics.savingsPotential)} this month.`);
   }
 
-  const urgentGoal = state.goals.find((goal) => monthsUntil(goal.deadline, now) <= 3);
+  const urgentGoal = state.goals.find(
+    (goal) => goal.monthlyContribution > 0 && monthsUntil(goal.deadline, now) <= 3,
+  );
   if (urgentGoal) {
     insights.push(`${urgentGoal.name} needs consistent monthly contributions now.`);
   }

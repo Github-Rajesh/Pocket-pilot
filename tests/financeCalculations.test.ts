@@ -10,7 +10,10 @@ test('calculates safe spend from remaining monthly budget', () => {
   const metrics = calculateDashboardMetrics(seedFinanceState, new Date(2026, 7, 10));
 
   assert.equal(metrics.currentMonthExpenses, 11550);
-  assert.equal(metrics.remainingMonthlyBudget, 11950);
+  assert.equal(metrics.fixedExpenseTotal, 46500);
+  assert.equal(metrics.unpaidFixedExpenseTotal, 46500);
+  assert.equal(metrics.plannedGoalSavings, 0);
+  assert.equal(metrics.remainingMonthlyBudget, 27950);
   assert.ok(metrics.safeSpendToday > 500);
   assert.ok(metrics.financialHealthScore >= 0);
   assert.ok(metrics.financialHealthScore <= 100);
