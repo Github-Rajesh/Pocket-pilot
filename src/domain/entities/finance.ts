@@ -65,6 +65,18 @@ export interface Goal {
   note: string;
 }
 
+export interface Debt {
+  id: string;
+  lender: string;
+  description: string;
+  originalAmount: number;
+  outstandingAmount: number;
+  minimumPayment: number;
+  dueDate: string;
+  paidThisMonth: boolean;
+  notes: string;
+}
+
 export interface CreditCardAccount {
   id: string;
   cardName: string;
@@ -81,6 +93,7 @@ export interface FinanceState {
   profile: FinancialProfile;
   transactions: MoneyTransaction[];
   goals: Goal[];
+  debts: Debt[];
   creditCards: CreditCardAccount[];
 }
 
@@ -95,6 +108,10 @@ export interface DashboardMetrics {
   paidFixedExpenseTotal: number;
   unpaidFixedExpenseTotal: number;
   plannedGoalSavings: number;
+  debtOutstandingTotal: number;
+  debtPaymentTotal: number;
+  paidDebtPaymentTotal: number;
+  unpaidDebtPaymentTotal: number;
   remainingMonthlyBudget: number;
   safeSpendToday: number;
   savingsPotential: number;

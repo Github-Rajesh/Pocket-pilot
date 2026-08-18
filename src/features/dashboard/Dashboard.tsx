@@ -2,6 +2,7 @@ import {
   ArrowRight,
   Bot,
   CalendarClock,
+  CircleDollarSign,
   IndianRupee,
   PiggyBank,
   Plus,
@@ -18,7 +19,7 @@ import {
 } from '../../domain/services/financeCalculations';
 
 interface DashboardProps {
-  onNavigate: (section: 'transactions' | 'goals' | 'analytics' | 'assistant') => void;
+  onNavigate: (section: 'transactions' | 'goals' | 'debts' | 'analytics' | 'assistant') => void;
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
@@ -56,9 +57,13 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           <Bot size={18} />
           Ask AI
         </button>
+        <button className="action-button" onClick={() => onNavigate('debts')} type="button">
+          <CircleDollarSign size={18} />
+          Add debt
+        </button>
         <button className="action-button" onClick={() => onNavigate('analytics')} type="button">
           <TrendingUp size={18} />
-          Analytics
+          Money map
         </button>
       </div>
 
@@ -99,6 +104,24 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           <ProgressBar label="Expense ratio" value={metrics.expenseRatio} />
           <ProgressBar label="Savings ratio" value={metrics.savingsRatio} />
           <ProgressBar label="Credit utilization" value={metrics.creditUtilization} />
+          <div className="budget-breakdown">
+            <div>
+              <span>Paid bills</span>
+              <strong>{currency(metrics.paidFixedExpenseTotal)}</strong>
+            </div>
+            <div>
+              <span>Unpaid bills</span>
+              <strong>{currency(metrics.unpaidFixedExpenseTotal)}</strong>
+            </div>
+            <div>
+              <span>Debt due</span>
+              <strong>{currency(metrics.unpaidDebtPaymentTotal)}</strong>
+            </div>
+            <div>
+              <span>Flexible spent</span>
+              <strong>{currency(metrics.currentMonthExpenses)}</strong>
+            </div>
+          </div>
         </article>
 
         <article className="panel">
@@ -159,6 +182,9 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             </div>
           </div>
           <div className="goal-mini-list">
+            {state.goals.length === 0 && (
+              <p className="muted-copy">No active goals. Add one when you are ready to plan it.</p>
+            )}
             {state.goals.slice(0, 3).map((goal) => (
               <div key={goal.id}>
                 <ProgressBar

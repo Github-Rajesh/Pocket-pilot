@@ -7,6 +7,7 @@ import {
   useReducer,
 } from 'react';
 import type {
+  Debt,
   ExpenseCategory,
   FinanceState,
   Goal,
@@ -19,6 +20,9 @@ type FinanceAction =
   | { type: 'add-transaction'; payload: MoneyTransaction }
   | { type: 'delete-transaction'; payload: string }
   | { type: 'add-goal'; payload: Goal }
+  | { type: 'add-debt'; payload: Debt }
+  | { type: 'delete-debt'; payload: string }
+  | { type: 'toggle-debt-paid'; payload: string }
   | { type: 'update-salary'; payload: number }
   | { type: 'update-salary-adjustment'; payload: number }
   | {
@@ -32,6 +36,9 @@ interface FinanceContextValue {
   addTransaction: (transaction: Omit<MoneyTransaction, 'id'>) => void;
   deleteTransaction: (id: string) => void;
   addGoal: (goal: Omit<Goal, 'id'>) => void;
+  addDebt: (debt: Omit<Debt, 'id'>) => void;
+  deleteDebt: (id: string) => void;
+  toggleDebtPaid: (id: string) => void;
   updateSalary: (salary: number) => void;
   updateSalaryAdjustment: (amount: number) => void;
   updateFixedExpense: (
@@ -63,6 +70,28 @@ function reducer(state: FinanceState, action: FinanceAction): FinanceState {
       return {
         ...state,
         goals: [action.payload, ...state.goals],
+      };
+    case 'add-debt':
+      return {
+        ...state,
+        debts: [action.payload, ...state.debts],
+      };
+    case 'delete-debt':
+      return {
+        ...state,
+        debts: state.debts.filter((debt) => debt.id !== action.payload),
+      };
+    case 'toggle-debt-paid':
+      return {
+        ...state,
+        debts: state.debts.map((debt) =>
+          debt.id === action.payload
+            ? {
+                ...debt,
+                paidThisMonth: !debt.paidThisMonth,
+              }
+            : debt,
+        ),
       };
     case 'update-salary':
       return {
@@ -133,6 +162,21 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
             id: crypto.randomUUID(),
           },
         });
+      },
+      addDebt(debt) {
+        dispatch({
+          type: 'add-debt',
+          payload: {
+            ...debt,
+            id: crypto.randomUUID(),
+          },
+        });
+      },
+      deleteDebt(id) {
+        dispatch({ type: 'delete-debt', payload: id });
+      },
+      toggleDebtPaid(id) {
+        dispatch({ type: 'toggle-debt-paid', payload: id });
       },
       updateSalary(salary) {
         dispatch({ type: 'update-salary', payload: salary });

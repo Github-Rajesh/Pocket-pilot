@@ -30,6 +30,7 @@ export class FinanceRepository {
 
 function normalizeState(value: Partial<FinanceState>): FinanceState {
   const schemaVersion = value.schemaVersion ?? 1;
+  const seededGoalIds = new Set(['emergency-fund', 'gaming-laptop', 'singapore-trip']);
   const profile = {
     ...seedFinanceState.profile,
     ...value.profile,
@@ -42,24 +43,11 @@ function normalizeState(value: Partial<FinanceState>): FinanceState {
   };
 
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     profile,
     transactions: value.transactions ?? seedFinanceState.transactions,
-    goals: (value.goals ?? seedFinanceState.goals).map((goal) => {
-      if (schemaVersion >= 2) {
-        return goal;
-      }
-
-      if (['emergency-fund', 'gaming-laptop', 'singapore-trip'].includes(goal.id)) {
-        return {
-          ...goal,
-          currentSavings: 0,
-          monthlyContribution: 0,
-        };
-      }
-
-      return goal;
-    }),
+    goals: (value.goals ?? seedFinanceState.goals).filter((goal) => !seededGoalIds.has(goal.id)),
+    debts: value.debts ?? seedFinanceState.debts,
     creditCards: value.creditCards ?? seedFinanceState.creditCards,
   };
 }

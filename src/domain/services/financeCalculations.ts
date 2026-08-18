@@ -64,11 +64,25 @@ export function calculateDashboardMetrics(
     (total, goal) => total + goal.monthlyContribution,
     0,
   );
+  const debtOutstandingTotal = state.debts.reduce(
+    (total, debt) => total + debt.outstandingAmount,
+    0,
+  );
+  const debtPaymentTotal = state.debts.reduce((total, debt) => total + debt.minimumPayment, 0);
+  const paidDebtPaymentTotal = state.debts
+    .filter((debt) => debt.paidThisMonth)
+    .reduce((total, debt) => total + debt.minimumPayment, 0);
+  const unpaidDebtPaymentTotal = debtPaymentTotal - paidDebtPaymentTotal;
   const expectedIncome =
     state.profile.monthlySalary + state.profile.salaryAdjustmentThisMonth + currentMonthIncome;
   const remainingMonthlyBudget =
-    expectedIncome - fixedExpenseTotal - plannedGoalSavings - currentMonthExpenses;
-  const availableBalance = expectedIncome - paidFixedExpenseTotal - currentMonthExpenses;
+    expectedIncome -
+    fixedExpenseTotal -
+    debtPaymentTotal -
+    plannedGoalSavings -
+    currentMonthExpenses;
+  const availableBalance =
+    expectedIncome - paidFixedExpenseTotal - paidDebtPaymentTotal - currentMonthExpenses;
   const savingsPotential = Math.max(remainingMonthlyBudget, 0);
   const creditUsage = state.creditCards.reduce((total, card) => total + card.currentUsage, 0);
   const creditLimit = state.creditCards.reduce((total, card) => total + card.limit, 0);
@@ -90,6 +104,10 @@ export function calculateDashboardMetrics(
     paidFixedExpenseTotal,
     unpaidFixedExpenseTotal,
     plannedGoalSavings,
+    debtOutstandingTotal,
+    debtPaymentTotal,
+    paidDebtPaymentTotal,
+    unpaidDebtPaymentTotal,
     remainingMonthlyBudget,
     safeSpendToday: Math.max(remainingMonthlyBudget / remainingDaysInMonth(now), 0),
     savingsPotential,
@@ -147,6 +165,16 @@ export function generateInsights(state: FinanceState, now = new Date()) {
     insights.push('Your monthly plan is under pressure. Pause non-essential spends.');
   }
 
+  if (metrics.unpaidFixedExpenseTotal > 0) {
+    insights.push(`${currency(metrics.unpaidFixedExpenseTotal)} of fixed bills are still unpaid.`);
+  } else {
+    insights.push('All fixed bills are marked paid for this month.');
+  }
+
+  if (metrics.unpaidDebtPaymentTotal > 0) {
+    insights.push(`${currency(metrics.unpaidDebtPaymentTotal)} of debt payments are still due.`);
+  }
+
   if (topCategory) {
     insights.push(`${topCategory[0]} is the biggest spending category this month.`);
   }
@@ -182,6 +210,7 @@ export function evaluatePurchase(
   const nextMonthSurplus =
     futureMonthlySalary -
     state.profile.fixedExpenses.reduce((total, expense) => total + expense.amount, 0) -
+    state.debts.reduce((total, debt) => total + debt.minimumPayment, 0) -
     state.goals.reduce((total, goal) => total + goal.monthlyContribution, 0);
 
   if (amount <= metrics.remainingMonthlyBudget * 0.6 && metrics.financialHealthScore >= 70) {

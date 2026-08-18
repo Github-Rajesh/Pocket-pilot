@@ -101,6 +101,15 @@ export function Goals() {
         </form>
 
         <div className="goal-grid">
+          {state.goals.length === 0 && (
+            <article className="panel goal-card goal-card--empty">
+              <div className="goal-card__icon">
+                <Target size={20} />
+              </div>
+              <h2>No goals yet</h2>
+              <p>Add a goal only when you actually want to start planning for one.</p>
+            </article>
+          )}
           {state.goals.map((goal) => {
             const progress = goal.targetAmount > 0 ? goal.currentSavings / goal.targetAmount : 0;
             const remaining = Math.max(goal.targetAmount - goal.currentSavings, 0);

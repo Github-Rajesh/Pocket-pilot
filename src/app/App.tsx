@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import {
   BarChart3,
   Bot,
+  CircleDollarSign,
   LayoutDashboard,
   PiggyBank,
   ReceiptText,
@@ -11,17 +12,26 @@ import {
 import { Dashboard } from '../features/dashboard/Dashboard';
 import { Transactions } from '../features/transactions/Transactions';
 import { Goals } from '../features/goals/Goals';
+import { Debts } from '../features/debts/Debts';
 import { Analytics } from '../features/analytics/Analytics';
 import { Assistant } from '../features/assistant/Assistant';
 import { SettingsPanel } from '../features/settings/SettingsPanel';
 
-type SectionId = 'dashboard' | 'transactions' | 'goals' | 'analytics' | 'assistant' | 'settings';
+type SectionId =
+  | 'dashboard'
+  | 'transactions'
+  | 'goals'
+  | 'debts'
+  | 'analytics'
+  | 'assistant'
+  | 'settings';
 
 const sections = [
   { id: 'dashboard', label: 'Today', icon: LayoutDashboard },
   { id: 'transactions', label: 'Money', icon: ReceiptText },
   { id: 'goals', label: 'Goals', icon: PiggyBank },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  { id: 'debts', label: 'Debts', icon: CircleDollarSign },
+  { id: 'analytics', label: 'Map', icon: BarChart3 },
   { id: 'assistant', label: 'AI', icon: Bot },
   { id: 'settings', label: 'Settings', icon: Settings },
 ] satisfies Array<{ id: SectionId; label: string; icon: typeof WalletCards }>;
@@ -36,8 +46,10 @@ export function App() {
         return <Transactions />;
       case 'goals':
         return <Goals />;
+      case 'debts':
+        return <Debts />;
       case 'analytics':
-        return <Analytics />;
+        return <Analytics onNavigate={setActiveSection} />;
       case 'assistant':
         return <Assistant />;
       case 'settings':
@@ -79,7 +91,7 @@ export function App() {
       <main className="main-panel">{activeContent}</main>
 
       <nav className="mobile-nav" aria-label="Mobile primary">
-        {sections.slice(0, 5).map((section) => {
+        {sections.filter((section) => section.id !== 'settings').map((section) => {
           const Icon = section.icon;
           return (
             <button

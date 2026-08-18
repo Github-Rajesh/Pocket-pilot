@@ -3,11 +3,8 @@ import type { FinanceState } from './entities/finance';
 const today = new Date();
 const isoDaysAgo = (days: number) =>
   new Date(today.getFullYear(), today.getMonth(), today.getDate() - days).toISOString();
-const futureMonth = (months: number) =>
-  new Date(today.getFullYear(), today.getMonth() + months, 1).toISOString();
-
 export const seedFinanceState: FinanceState = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   profile: {
     name: 'Shraj',
     monthlySalary: 86000,
@@ -104,35 +101,8 @@ export const seedFinanceState: FinanceState = {
       recurring: false,
     },
   ],
-  goals: [
-    {
-      id: 'emergency-fund',
-      name: 'Emergency Fund',
-      targetAmount: 150000,
-      currentSavings: 0,
-      monthlyContribution: 0,
-      deadline: futureMonth(8),
-      note: 'Three months of core expenses.',
-    },
-    {
-      id: 'gaming-laptop',
-      name: 'Gaming Laptop',
-      targetAmount: 95000,
-      currentSavings: 0,
-      monthlyContribution: 0,
-      deadline: futureMonth(6),
-      note: 'Buy only if cash flow stays disciplined.',
-    },
-    {
-      id: 'singapore-trip',
-      name: 'Singapore Trip',
-      targetAmount: 120000,
-      currentSavings: 0,
-      monthlyContribution: 0,
-      deadline: futureMonth(12),
-      note: 'Travel fund after emergency buffer improves.',
-    },
-  ],
+  goals: [],
+  debts: [],
   creditCards: [
     {
       id: 'primary-card',
