@@ -82,10 +82,13 @@ export interface CreditCardAccount {
   cardName: string;
   limit: number;
   currentUsage: number;
+  paidAmountThisMonth: number;
+  paidMonthKey: string | null;
   statementDay: number;
   dueDay: number;
   minimumDue: number;
   outstanding: number;
+  paidThisMonth: boolean;
 }
 
 export interface FinanceState {
@@ -112,6 +115,8 @@ export interface DashboardMetrics {
   debtPaymentTotal: number;
   paidDebtPaymentTotal: number;
   unpaidDebtPaymentTotal: number;
+  creditCardCycleSpend: number;
+  creditCardPayable: number;
   remainingMonthlyBudget: number;
   safeSpendToday: number;
   savingsPotential: number;

@@ -1,5 +1,6 @@
 import type { FinanceState } from '../../domain/entities/finance';
 import { seedFinanceState } from '../../domain/seedFinanceState';
+import { monthKey } from '../../domain/services/financeCalculations';
 
 const storageKey = 'pocket-pilot-finance-state-v1';
 
@@ -48,6 +49,14 @@ function normalizeState(value: Partial<FinanceState>): FinanceState {
     transactions: value.transactions ?? seedFinanceState.transactions,
     goals: (value.goals ?? seedFinanceState.goals).filter((goal) => !seededGoalIds.has(goal.id)),
     debts: value.debts ?? seedFinanceState.debts,
-    creditCards: value.creditCards ?? seedFinanceState.creditCards,
+    creditCards: (value.creditCards ?? seedFinanceState.creditCards).map((card) => ({
+      ...card,
+      limit: card.id === 'primary-card' ? 20700 : card.limit,
+      cardName: card.id === 'primary-card' ? 'My Credit Card' : card.cardName,
+      paidAmountThisMonth: card.paidAmountThisMonth ?? 0,
+      paidMonthKey: card.paidMonthKey ?? (card.paidThisMonth ? monthKey() : null),
+      paidThisMonth: card.paidThisMonth ?? false,
+      dueDay: card.id === 'primary-card' ? profile.salaryDay : card.dueDay,
+    })),
   };
 }

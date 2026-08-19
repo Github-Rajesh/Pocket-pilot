@@ -9,7 +9,7 @@ import {
 } from '../../domain/services/financeCalculations';
 
 interface AnalyticsProps {
-  onNavigate: (section: 'transactions' | 'debts') => void;
+  onNavigate: (section: 'transactions' | 'debts' | 'creditCards') => void;
 }
 
 export function Analytics({ onNavigate }: AnalyticsProps) {
@@ -29,6 +29,7 @@ export function Analytics({ onNavigate }: AnalyticsProps) {
     { label: 'Fixed bills still unpaid', amount: -metrics.unpaidFixedExpenseTotal, tone: 'reserved' },
     { label: 'Debt payments paid', amount: -metrics.paidDebtPaymentTotal, tone: 'negative' },
     { label: 'Debt payments still due', amount: -metrics.unpaidDebtPaymentTotal, tone: 'reserved' },
+    { label: 'Credit card payable', amount: -metrics.creditCardPayable, tone: 'reserved' },
     { label: 'Flexible spending', amount: -metrics.currentMonthExpenses, tone: 'negative' },
     { label: 'Goal contributions planned', amount: -metrics.plannedGoalSavings, tone: 'reserved' },
   ];
@@ -137,8 +138,42 @@ export function Analytics({ onNavigate }: AnalyticsProps) {
             <strong>{Math.round(metrics.creditUtilization * 100)}%</strong>
           </div>
           <div>
+            <span>Card payable</span>
+            <strong>{currency(metrics.creditCardPayable)}</strong>
+          </div>
+          <div>
             <span>Debt outstanding</span>
             <strong>{currency(metrics.debtOutstandingTotal)}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article className="panel">
+        <div className="panel__header">
+          <div>
+            <span className="eyebrow">Card</span>
+            <h2>Credit Card</h2>
+          </div>
+          <button className="text-button" onClick={() => onNavigate('creditCards')} type="button">
+            Manage card
+          </button>
+        </div>
+        <div className="cash-flow-list">
+          <div className="cash-flow-row">
+            <div>
+              <span>This month on card</span>
+              <strong className="cash-flow-row__amount cash-flow-row__amount--reserved">
+                {currency(metrics.creditCardCycleSpend)}
+              </strong>
+            </div>
+          </div>
+          <div className="cash-flow-row">
+            <div>
+              <span>Payable now</span>
+              <strong className="cash-flow-row__amount cash-flow-row__amount--reserved">
+                {currency(metrics.creditCardPayable)}
+              </strong>
+            </div>
           </div>
         </div>
       </article>

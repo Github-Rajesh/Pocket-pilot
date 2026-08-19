@@ -14,7 +14,7 @@ export const seedFinanceState: FinanceState = {
     salaryDay: 1,
     currencyCode: 'INR',
     currencySymbol: 'Rs',
-    creditCardLimit: 20800,
+    creditCardLimit: 20700,
     monthlySavingsTarget: 18000,
     fixedExpenses: [
       {
@@ -106,13 +106,16 @@ export const seedFinanceState: FinanceState = {
   creditCards: [
     {
       id: 'primary-card',
-      cardName: 'Primary Credit Card',
-      limit: 20800,
-      currentUsage: 4750,
+      cardName: 'My Credit Card',
+      limit: 20700,
+      currentUsage: 0,
+      paidAmountThisMonth: 0,
+      paidMonthKey: null,
       statementDay: 18,
-      dueDay: 5,
-      minimumDue: 500,
-      outstanding: 4750,
+      dueDay: 1,
+      minimumDue: 0,
+      outstanding: 0,
+      paidThisMonth: false,
     },
   ],
 };

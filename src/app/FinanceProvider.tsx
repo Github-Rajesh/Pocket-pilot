@@ -7,6 +7,7 @@ import {
   useReducer,
 } from 'react';
 import type {
+  CreditCardAccount,
   Debt,
   ExpenseCategory,
   FinanceState,
@@ -15,6 +16,7 @@ import type {
 } from '../domain/entities/finance';
 import { seedFinanceState } from '../domain/seedFinanceState';
 import { FinanceRepository } from '../core/storage/financeRepository';
+import { monthKey } from '../domain/services/financeCalculations';
 
 type FinanceAction =
   | { type: 'add-transaction'; payload: MoneyTransaction }
@@ -23,6 +25,8 @@ type FinanceAction =
   | { type: 'add-debt'; payload: Debt }
   | { type: 'delete-debt'; payload: string }
   | { type: 'toggle-debt-paid'; payload: string }
+  | { type: 'update-credit-card'; payload: CreditCardAccount }
+  | { type: 'mark-credit-card-paid'; payload: { id: string; amount: number } }
   | { type: 'update-salary'; payload: number }
   | { type: 'update-salary-adjustment'; payload: number }
   | {
@@ -39,6 +43,8 @@ interface FinanceContextValue {
   addDebt: (debt: Omit<Debt, 'id'>) => void;
   deleteDebt: (id: string) => void;
   toggleDebtPaid: (id: string) => void;
+  updateCreditCard: (card: CreditCardAccount) => void;
+  markCreditCardPaid: (id: string, amount: number) => void;
   updateSalary: (salary: number) => void;
   updateSalaryAdjustment: (amount: number) => void;
   updateFixedExpense: (
@@ -60,6 +66,10 @@ function reducer(state: FinanceState, action: FinanceAction): FinanceState {
       return {
         ...state,
         transactions: [action.payload, ...state.transactions],
+        creditCards:
+          action.payload.type === 'expense' && action.payload.paymentMode === 'Credit Card'
+            ? state.creditCards.map((card) => ({ ...card, paidThisMonth: false }))
+            : state.creditCards,
       };
     case 'delete-transaction':
       return {
@@ -91,6 +101,27 @@ function reducer(state: FinanceState, action: FinanceAction): FinanceState {
                 paidThisMonth: !debt.paidThisMonth,
               }
             : debt,
+        ),
+      };
+    case 'update-credit-card':
+      return {
+        ...state,
+        creditCards: state.creditCards.map((card) =>
+          card.id === action.payload.id ? action.payload : card,
+        ),
+      };
+    case 'mark-credit-card-paid':
+      return {
+        ...state,
+        creditCards: state.creditCards.map((card) =>
+          card.id === action.payload.id
+            ? {
+                ...card,
+                paidAmountThisMonth: action.payload.amount,
+                paidMonthKey: monthKey(),
+                paidThisMonth: true,
+              }
+            : card,
         ),
       };
     case 'update-salary':
@@ -177,6 +208,12 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       },
       toggleDebtPaid(id) {
         dispatch({ type: 'toggle-debt-paid', payload: id });
+      },
+      updateCreditCard(card) {
+        dispatch({ type: 'update-credit-card', payload: card });
+      },
+      markCreditCardPaid(id, amount) {
+        dispatch({ type: 'mark-credit-card-paid', payload: { id, amount } });
       },
       updateSalary(salary) {
         dispatch({ type: 'update-salary', payload: salary });

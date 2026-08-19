@@ -3,6 +3,7 @@ import {
   Bot,
   CalendarClock,
   CircleDollarSign,
+  CreditCard,
   IndianRupee,
   PiggyBank,
   Plus,
@@ -19,7 +20,9 @@ import {
 } from '../../domain/services/financeCalculations';
 
 interface DashboardProps {
-  onNavigate: (section: 'transactions' | 'goals' | 'debts' | 'analytics' | 'assistant') => void;
+  onNavigate: (
+    section: 'transactions' | 'goals' | 'debts' | 'creditCards' | 'analytics' | 'assistant'
+  ) => void;
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
@@ -60,6 +63,10 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         <button className="action-button" onClick={() => onNavigate('debts')} type="button">
           <CircleDollarSign size={18} />
           Add debt
+        </button>
+        <button className="action-button" onClick={() => onNavigate('creditCards')} type="button">
+          <CreditCard size={18} />
+          Card
         </button>
         <button className="action-button" onClick={() => onNavigate('analytics')} type="button">
           <TrendingUp size={18} />
@@ -116,6 +123,10 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             <div>
               <span>Debt due</span>
               <strong>{currency(metrics.unpaidDebtPaymentTotal)}</strong>
+            </div>
+            <div>
+              <span>Card payable</span>
+              <strong>{currency(metrics.creditCardPayable)}</strong>
             </div>
             <div>
               <span>Flexible spent</span>

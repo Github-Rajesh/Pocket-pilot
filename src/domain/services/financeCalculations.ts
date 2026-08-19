@@ -45,6 +45,35 @@ export function categoryTotals(transactions: MoneyTransaction[]) {
     }, {});
 }
 
+export function monthKey(now = new Date()) {
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
+export function creditCardCycleSpend(transactions: MoneyTransaction[], now = new Date()) {
+  return currentMonthTransactions(transactions, now)
+    .filter(
+      (transaction) =>
+        transaction.type === 'expense' && transaction.paymentMode === 'Credit Card',
+    )
+    .reduce((total, transaction) => total + transaction.amount, 0);
+}
+
+export function creditCardPayable(state: FinanceState, now = new Date()) {
+  const cycleSpend = creditCardCycleSpend(state.transactions, now);
+  const activeMonthKey = monthKey(now);
+  const openingOutstanding = state.creditCards.reduce(
+    (total, card) => total + card.currentUsage,
+    0,
+  );
+  const paidAmount = state.creditCards.reduce(
+    (total, card) =>
+      total + (card.paidMonthKey === activeMonthKey ? card.paidAmountThisMonth ?? 0 : 0),
+    0,
+  );
+
+  return Math.max(openingOutstanding + cycleSpend - paidAmount, 0);
+}
+
 export function calculateDashboardMetrics(
   state: FinanceState,
   now = new Date(),
@@ -73,6 +102,8 @@ export function calculateDashboardMetrics(
     .filter((debt) => debt.paidThisMonth)
     .reduce((total, debt) => total + debt.minimumPayment, 0);
   const unpaidDebtPaymentTotal = debtPaymentTotal - paidDebtPaymentTotal;
+  const cardCycleSpend = creditCardCycleSpend(state.transactions, now);
+  const cardPayable = creditCardPayable(state, now);
   const expectedIncome =
     state.profile.monthlySalary + state.profile.salaryAdjustmentThisMonth + currentMonthIncome;
   const remainingMonthlyBudget =
@@ -84,9 +115,8 @@ export function calculateDashboardMetrics(
   const availableBalance =
     expectedIncome - paidFixedExpenseTotal - paidDebtPaymentTotal - currentMonthExpenses;
   const savingsPotential = Math.max(remainingMonthlyBudget, 0);
-  const creditUsage = state.creditCards.reduce((total, card) => total + card.currentUsage, 0);
   const creditLimit = state.creditCards.reduce((total, card) => total + card.limit, 0);
-  const creditUtilization = creditLimit <= 0 ? 0 : creditUsage / creditLimit;
+  const creditUtilization = creditLimit <= 0 ? 0 : cardPayable / creditLimit;
   const expenseRatio = expectedIncome <= 0 ? 0 : (fixedExpenseTotal + currentMonthExpenses) / expectedIncome;
   const savingsRatio = expectedIncome <= 0 ? 0 : savingsPotential / expectedIncome;
   const topCategory = Object.entries(categoryTotals(monthlyTransactions)).sort(
@@ -108,6 +138,8 @@ export function calculateDashboardMetrics(
     debtPaymentTotal,
     paidDebtPaymentTotal,
     unpaidDebtPaymentTotal,
+    creditCardCycleSpend: cardCycleSpend,
+    creditCardPayable: cardPayable,
     remainingMonthlyBudget,
     safeSpendToday: Math.max(remainingMonthlyBudget / remainingDaysInMonth(now), 0),
     savingsPotential,
@@ -173,6 +205,10 @@ export function generateInsights(state: FinanceState, now = new Date()) {
 
   if (metrics.unpaidDebtPaymentTotal > 0) {
     insights.push(`${currency(metrics.unpaidDebtPaymentTotal)} of debt payments are still due.`);
+  }
+
+  if (metrics.creditCardPayable > 0) {
+    insights.push(`${currency(metrics.creditCardPayable)} is currently payable on your credit card.`);
   }
 
   if (topCategory) {

@@ -22,7 +22,7 @@ export function Assistant() {
     () => [
       {
         role: 'assistant',
-        content: `You can safely spend ${currency(metrics.safeSpendToday)} today. Ask about purchases, goals, debts, salary changes, or spending leaks.`,
+        content: `You can safely spend ${currency(metrics.safeSpendToday)} today. Ask about purchases, goals, debts, credit card usage, salary changes, or spending leaks.`,
       },
     ],
     [metrics.safeSpendToday],
@@ -101,6 +101,10 @@ export function Assistant() {
       return `You currently track ${currency(metrics.debtOutstandingTotal)} outstanding debt, with ${currency(metrics.unpaidDebtPaymentTotal)} still due this month.`;
     }
 
+    if (normalized.includes('card') || normalized.includes('credit')) {
+      return `Your credit card payable is ${currency(metrics.creditCardPayable)} against the card limit. This month you have spent ${currency(metrics.creditCardCycleSpend)} on the card.`;
+    }
+
     if (normalized.includes('waste') || normalized.includes('leak')) {
       return `${metrics.topSpendingCategory} is the current spending leak candidate. Review every transaction in that category before adding new discretionary spends.`;
     }
@@ -114,7 +118,7 @@ export function Assistant() {
         <div>
           <span className="eyebrow">Decision engine</span>
           <h1>AI Financial Assistant</h1>
-          <p>Uses your current app data to answer purchase, budget, debt, and salary questions.</p>
+          <p>Uses your current app data to answer purchase, budget, debt, card, and salary questions.</p>
         </div>
       </header>
 
@@ -158,6 +162,7 @@ export function Assistant() {
             'How much did I spend this month?',
             'Can I buy a laptop for 95000?',
             'How much debt is still due?',
+            'How much is payable on my credit card?',
             'What if my salary increases?',
           ].map((prompt) => (
             <button className="prompt-chip" key={prompt} onClick={() => setInput(prompt)} type="button">

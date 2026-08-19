@@ -858,8 +858,8 @@ textarea:focus {
     left: 14px;
     z-index: 10;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
+    gap: 6px;
     padding: 8px;
     border: 1px solid var(--line);
     border-radius: calc(var(--radius) + 8px);
@@ -870,7 +870,7 @@ textarea:focus {
   .mobile-nav__item {
     display: grid;
     place-items: center;
-    min-height: 44px;
+    min-height: 42px;
     border: 0;
     border-radius: var(--radius);
     background: transparent;

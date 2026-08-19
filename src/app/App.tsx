@@ -3,6 +3,7 @@ import {
   BarChart3,
   Bot,
   CircleDollarSign,
+  CreditCard,
   LayoutDashboard,
   PiggyBank,
   ReceiptText,
@@ -13,6 +14,7 @@ import { Dashboard } from '../features/dashboard/Dashboard';
 import { Transactions } from '../features/transactions/Transactions';
 import { Goals } from '../features/goals/Goals';
 import { Debts } from '../features/debts/Debts';
+import { CreditCards } from '../features/creditCards/CreditCards';
 import { Analytics } from '../features/analytics/Analytics';
 import { Assistant } from '../features/assistant/Assistant';
 import { SettingsPanel } from '../features/settings/SettingsPanel';
@@ -22,6 +24,7 @@ type SectionId =
   | 'transactions'
   | 'goals'
   | 'debts'
+  | 'creditCards'
   | 'analytics'
   | 'assistant'
   | 'settings';
@@ -31,6 +34,7 @@ const sections = [
   { id: 'transactions', label: 'Money', icon: ReceiptText },
   { id: 'goals', label: 'Goals', icon: PiggyBank },
   { id: 'debts', label: 'Debts', icon: CircleDollarSign },
+  { id: 'creditCards', label: 'Card', icon: CreditCard },
   { id: 'analytics', label: 'Map', icon: BarChart3 },
   { id: 'assistant', label: 'AI', icon: Bot },
   { id: 'settings', label: 'Settings', icon: Settings },
@@ -48,6 +52,8 @@ export function App() {
         return <Goals />;
       case 'debts':
         return <Debts />;
+      case 'creditCards':
+        return <CreditCards />;
       case 'analytics':
         return <Analytics onNavigate={setActiveSection} />;
       case 'assistant':
