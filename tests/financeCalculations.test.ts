@@ -4,7 +4,9 @@ import { seedFinanceState } from '../src/domain/seedFinanceState';
 import {
   calculateDashboardMetrics,
   evaluatePurchase,
+  isCreditCardExpense,
 } from '../src/domain/services/financeCalculations';
+import type { MoneyTransaction } from '../src/domain/entities/finance';
 
 test('calculates safe spend from remaining monthly budget', () => {
   const metrics = calculateDashboardMetrics(seedFinanceState, new Date(2026, 7, 10));
@@ -28,4 +30,22 @@ test('purchase simulator recommends waiting for expensive purchases', () => {
   );
 
   assert.match(['NO', 'WAIT', 'BUY NEXT MONTH'].join(','), new RegExp(decision.verdict));
+});
+
+test('recognizes credit card expense payment mode variants', () => {
+  const transaction = {
+    id: 'test-card-expense',
+    title: 'Card spend',
+    amount: 500,
+    category: 'Food',
+    date: new Date(2026, 7, 10).toISOString(),
+    paymentMode: 'credit-card',
+    type: 'expense',
+    notes: '',
+    tags: [],
+    recurring: false,
+  } as unknown as MoneyTransaction;
+
+  assert.equal(isCreditCardExpense(transaction), true);
+  assert.equal(isCreditCardExpense({ ...transaction, paymentMode: 'Debit Card' }), false);
 });

@@ -16,7 +16,7 @@ import type {
 } from '../domain/entities/finance';
 import { seedFinanceState } from '../domain/seedFinanceState';
 import { FinanceRepository } from '../core/storage/financeRepository';
-import { monthKey } from '../domain/services/financeCalculations';
+import { isCreditCardExpense, monthKey } from '../domain/services/financeCalculations';
 
 type FinanceAction =
   | { type: 'add-transaction'; payload: MoneyTransaction }
@@ -67,7 +67,7 @@ function reducer(state: FinanceState, action: FinanceAction): FinanceState {
         ...state,
         transactions: [action.payload, ...state.transactions],
         creditCards:
-          action.payload.type === 'expense' && action.payload.paymentMode === 'Credit Card'
+          isCreditCardExpense(action.payload)
             ? state.creditCards.map((card) => ({ ...card, paidThisMonth: false }))
             : state.creditCards,
       };

@@ -49,12 +49,17 @@ export function monthKey(now = new Date()) {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
+export function isCreditCardExpense(transaction: MoneyTransaction) {
+  const paymentMode = String(transaction.paymentMode).toLowerCase().replace(/[^a-z]/g, '');
+  const isCardMode =
+    paymentMode === 'creditcard' || paymentMode === 'cc' || paymentMode === 'card';
+
+  return transaction.type === 'expense' && isCardMode;
+}
+
 export function creditCardCycleSpend(transactions: MoneyTransaction[], now = new Date()) {
   return currentMonthTransactions(transactions, now)
-    .filter(
-      (transaction) =>
-        transaction.type === 'expense' && transaction.paymentMode === 'Credit Card',
-    )
+    .filter(isCreditCardExpense)
     .reduce((total, transaction) => total + transaction.amount, 0);
 }
 

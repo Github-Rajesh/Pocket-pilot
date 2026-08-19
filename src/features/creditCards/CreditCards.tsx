@@ -7,6 +7,7 @@ import {
   creditCardPayable,
   currency,
   currentMonthTransactions,
+  isCreditCardExpense,
   monthKey,
 } from '../../domain/services/financeCalculations';
 
@@ -24,7 +25,7 @@ export function CreditCards() {
   const cardTransactions = useMemo(
     () =>
       currentMonthTransactions(state.transactions)
-        .filter((transaction) => transaction.type === 'expense' && transaction.paymentMode === 'Credit Card')
+        .filter(isCreditCardExpense)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     [state.transactions],
   );
